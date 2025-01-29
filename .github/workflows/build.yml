@@ -44,7 +44,7 @@ jobs:
 
       - name: Package NVIDIA version
         run: |
-          cp hiveos_packager_nvidia/* "$GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia/hiveos_packager_nvidia"
+          cp hiveos_packager_nvidia/* "$GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia/"
           chmod -R a+rwx "$GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia"
           tar -zcvf "$GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia.tar.gz" -C "$GITHUB_WORKSPACE/output" quai-gpu-miner-nvidia
 
@@ -58,7 +58,7 @@ jobs:
 
       - name: Package AMD version
         run: |
-          cp hiveos_packager_amd/* "$GITHUB_WORKSPACE/output/quai-gpu-miner-amd/hiveos_packager_amd"
+          cp hiveos_packager_amd/* "$GITHUB_WORKSPACE/output/quai-gpu-miner-amd/"
           chmod -R a+rwx "$GITHUB_WORKSPACE/output/quai-gpu-miner-amd"
           tar -zcvf "$GITHUB_WORKSPACE/output/quai-gpu-miner-amd.tar.gz" -C "$GITHUB_WORKSPACE/output" quai-gpu-miner-amd
 

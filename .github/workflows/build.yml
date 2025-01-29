@@ -30,6 +30,7 @@ jobs:
 
       - name: Clone repository
         run: |
+          ls
           git clone https://github.com/seal-clubber/quai-gpu-miner
           cd quai-gpu-miner
           git submodule update --init --recursive

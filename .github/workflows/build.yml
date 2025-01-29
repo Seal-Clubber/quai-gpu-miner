@@ -44,7 +44,7 @@ jobs:
 
       - name: Package NVIDIA version
         run: |
-          cd quai-gpu-miner
+          cd ../
           cp -r hiveos_packager_nvidia ../../output/quai-gpu-miner-nvidia/hiveos_packager_nvidia
           cp ../../output/quai-gpu-miner-nvidia ../../output/quai-gpu-miner-nvidia/quai-gpu-miner-nvidia
           chmod -R a+rwx ../../output/quai-gpu-miner-nvidia
@@ -52,7 +52,6 @@ jobs:
 
       - name: Build AMD version
         run: |
-          cd quai-gpu-miner
           rm -rf build && mkdir build && cd build
           cmake .. -DETHASHCUDA=OFF -DETHASHCL=ON
           cmake --build .
@@ -60,7 +59,7 @@ jobs:
 
       - name: Package AMD version
         run: |
-          cd quai-gpu-miner
+          cd ../
           cp -r hiveos_packager_amd ../../output/quai-gpu-miner-amd/hiveos_packager_amd
           cp ../../output/quai-gpu-miner-amd ../../output/quai-gpu-miner-amd/quai-gpu-miner-amd
           chmod -R a+rwx ../../output/quai-gpu-miner-amd

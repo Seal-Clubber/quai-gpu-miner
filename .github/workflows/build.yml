@@ -67,8 +67,8 @@ jobs:
         with:
           name: quai-gpu-miner-artifacts
           path: |
-            $GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia.tar.gz
-            $GITHUB_WORKSPACE/output/quai-gpu-miner-amd.tar.gz
+            output/quai-gpu-miner-nvidia.tar.gz
+            output/quai-gpu-miner-amd.tar.gz
 
       - name: Finish
         run: echo "All tasks completed successfully!"

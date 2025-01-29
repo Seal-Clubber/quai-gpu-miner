@@ -37,6 +37,9 @@ jobs:
 
       - name: Build NVIDIA version
         run: |
+          ls
+          cd quai-gpu-miner
+          ls
           mkdir build && cd build
           cmake .. -DETHASHCUDA=ON -DETHASHCL=OFF
           cmake --build .

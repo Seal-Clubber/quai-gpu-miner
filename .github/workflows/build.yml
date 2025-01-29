@@ -72,6 +72,8 @@ jobs:
           files: |
             output/quai-gpu-miner-nvidia.tar.gz
             output/quai-gpu-miner-amd.tar.gz
+            output/quai-gpu-miner-nvidia/quai-gpu-miner-nvidia
+            output/quai-gpu-miner-amd/quai-gpu-miner-amd
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

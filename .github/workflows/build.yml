@@ -23,6 +23,10 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y build-essential cmake mesa-common-dev git wget
+          wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.1-1_all.deb
+          sudo dpkg -i cuda-keyring_1.1-1_all.deb
+          sudo apt update
+          sudo apt install -y cuda-toolkit-12-6
 
       - name: Clone repository
         run: |
@@ -30,21 +34,33 @@ jobs:
           cd quai-gpu-miner
           git submodule update --init --recursive
 
+      - name: Build NVIDIA version
+        run: |
+          mkdir build && cd build
+          cmake .. -DETHASHCUDA=ON -DETHASHCL=OFF
+          cmake --build .
+          mkdir -p ../../output && cp kawpowminer/quai-gpu-miner ../../output/quai-gpu-miner-nvidia
+
+      - name: Package NVIDIA version
+        run: |
+          cd ../
+          cp -r hiveos_packager_nvidia ../output/quai-gpu-miner-nvidia/hiveos_packager_nvidia
+          cp ../output/quai-gpu-miner-nvidia ../output/quai-gpu-miner-nvidia/quai-gpu-miner-nvidia
+          chmod -R a+rwx ../output/quai-gpu-miner-nvidia
+          tar -zcvf ../output/quai-gpu-miner-nvidia.tar.gz -C ../output quai-gpu-miner-nvidia
+
       - name: Build AMD version
         run: |
-          ls
-          mkdir build && cd build
-          ls
+          rm -rf build && mkdir build && cd build
           cmake .. -DETHASHCUDA=OFF -DETHASHCL=ON
           cmake --build .
-          mkdir -p ../../output
           cp kawpowminer/quai-gpu-miner ../../output/quai-gpu-miner-amd
 
       - name: Package AMD version
         run: |
           cd ../
           cp -r hiveos_packager_amd ../output/quai-gpu-miner-amd/hiveos_packager_amd
-          cp ../output/quai-gpu-miner-amd ../output/quai-gpu-miner-amd/quai-gpu-miner-amd
+          cp ../../output/quai-gpu-miner-amd ../output/quai-gpu-miner-amd/quai-gpu-miner-amd
           chmod -R a+rwx ../output/quai-gpu-miner-amd
           tar -zcvf ../output/quai-gpu-miner-amd.tar.gz -C ../output quai-gpu-miner-amd
 
@@ -54,6 +70,7 @@ jobs:
         with:
           name: quai-gpu-miner-artifacts
           path: |
+            output/quai-gpu-miner-nvidia.tar.gz
             output/quai-gpu-miner-amd.tar.gz
 
       - name: Finish

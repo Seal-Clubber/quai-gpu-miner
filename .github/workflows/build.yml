@@ -24,18 +24,12 @@ jobs:
           sudo apt update
           sudo apt install -y build-essential cmake mesa-common-dev git wget
 
-      - name: Clone repository
+      - name: Initialize and update submodules
         run: |
-          ls
-          git clone https://github.com/seal-clubber/quai-gpu-miner
-          cd quai-gpu-miner
           git submodule update --init --recursive
 
       - name: Build NVIDIA version
         run: |
-          ls
-          cd quai-gpu-miner
-          ls
           mkdir build && cd build
           cmake .. -DETHASHCUDA=OFF -DETHASHCL=ON
           cmake --build .

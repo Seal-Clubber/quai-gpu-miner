@@ -17,55 +17,58 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up CUDA and dependencies
         run: |
           sudo apt update
           sudo apt install -y build-essential cmake mesa-common-dev git wget
+          wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.1-1_all.deb
+          sudo dpkg -i cuda-keyring_1.1-1_all.deb
+          sudo apt update
+          sudo apt install -y cuda-toolkit-12-6
 
       - name: Initialize and update submodules
-        run: |
-          ls ../
-          git submodule update --init --recursive
+        run: git submodule update --init --recursive
+
+      - name: Create output directory
+        run: mkdir -p "$GITHUB_WORKSPACE/output"
 
       - name: Build NVIDIA version
         run: |
-          mkdir build && cd build
-          cmake .. -DETHASHCUDA=OFF -DETHASHCL=ON
+          mkdir -p build-nvidia && cd build-nvidia
+          cmake .. -DETHASHCUDA=ON -DETHASHCL=OFF
           cmake --build .
-          mkdir -p ../../output/quai-gpu-miner-nvidia && cp kawpowminer/quai-gpu-miner ../../output/quai-gpu-miner-nvidia/quai-gpu-miner-nvidia
+          mkdir -p "$GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia"
+          cp kawpowminer/quai-gpu-miner "$GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia/quai-gpu-miner-nvidia"
 
       - name: Package NVIDIA version
         run: |
-          cd ../
-          cp -r hiveos_packager_nvidia ../output/quai-gpu-miner-nvidia/hiveos_packager_nvidia
-          chmod -R a+rwx ../output/quai-gpu-miner-nvidia
-          tar -zcvf ../output/quai-gpu-miner-nvidia.tar.gz -C ../output/quai-gpu-miner-nvidia
+          cp -r hiveos_packager_nvidia "$GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia/hiveos_packager_nvidia"
+          chmod -R a+rwx "$GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia"
+          tar -zcvf "$GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia.tar.gz" -C "$GITHUB_WORKSPACE/output" quai-gpu-miner-nvidia
 
       - name: Build AMD version
         run: |
-          rm -rf build && mkdir build && cd build
+          mkdir -p build-amd && cd build-amd
           cmake .. -DETHASHCUDA=OFF -DETHASHCL=ON
           cmake --build .
-          mkdir -p ../../output/quai-gpu-miner-amd && cp kawpowminer/quai-gpu-miner ../../output/quai-gpu-miner-amd/quai-gpu-miner-amd
+          mkdir -p "$GITHUB_WORKSPACE/output/quai-gpu-miner-amd"
+          cp kawpowminer/quai-gpu-miner "$GITHUB_WORKSPACE/output/quai-gpu-miner-amd/quai-gpu-miner-amd"
 
       - name: Package AMD version
         run: |
-          cd ../
-          cp -r hiveos_packager_amd ../output/quai-gpu-miner-amd/hiveos_packager_amd
-          chmod -R a+rwx ../output/quai-gpu-miner-amd
-          tar -zcvf ../output/quai-gpu-miner-amd.tar.gz -C ../output/quai-gpu-miner-amd
-
+          cp -r hiveos_packager_amd "$GITHUB_WORKSPACE/output/quai-gpu-miner-amd/hiveos_packager_amd"
+          chmod -R a+rwx "$GITHUB_WORKSPACE/output/quai-gpu-miner-amd"
+          tar -zcvf "$GITHUB_WORKSPACE/output/quai-gpu-miner-amd.tar.gz" -C "$GITHUB_WORKSPACE/output" quai-gpu-miner-amd
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: quai-gpu-miner-artifacts
           path: |
-            output/quai-gpu-miner-nvidia.tar.gz
-            output/quai-gpu-miner-amd.tar.gz
+            $GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia.tar.gz
+            $GITHUB_WORKSPACE/output/quai-gpu-miner-amd.tar.gz
 
       - name: Finish
-        run: |
-          echo "All tasks completed successfully!"
+        run: echo "All tasks completed successfully!"

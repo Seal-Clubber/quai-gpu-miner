@@ -44,7 +44,7 @@ jobs:
 
       - name: Package NVIDIA version
         run: |
-          cp -r hiveos_packager_nvidia "$GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia/hiveos_packager_nvidia"
+          cp hiveos_packager_nvidia/* "$GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia/hiveos_packager_nvidia"
           chmod -R a+rwx "$GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia"
           tar -zcvf "$GITHUB_WORKSPACE/output/quai-gpu-miner-nvidia.tar.gz" -C "$GITHUB_WORKSPACE/output" quai-gpu-miner-nvidia
 
@@ -58,17 +58,22 @@ jobs:
 
       - name: Package AMD version
         run: |
-          cp -r hiveos_packager_amd "$GITHUB_WORKSPACE/output/quai-gpu-miner-amd/hiveos_packager_amd"
+          cp hiveos_packager_amd/* "$GITHUB_WORKSPACE/output/quai-gpu-miner-amd/hiveos_packager_amd"
           chmod -R a+rwx "$GITHUB_WORKSPACE/output/quai-gpu-miner-amd"
           tar -zcvf "$GITHUB_WORKSPACE/output/quai-gpu-miner-amd.tar.gz" -C "$GITHUB_WORKSPACE/output" quai-gpu-miner-amd
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: quai-gpu-miner-artifacts
-          path: |
+          tag_name: ${{ github.event.inputs.tag_version }}
+          name: "Release ${{ github.event.inputs.tag_version }}"
+          draft: false
+          prerelease: false
+          files: |
             output/quai-gpu-miner-nvidia.tar.gz
             output/quai-gpu-miner-amd.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Finish
         run: echo "All tasks completed successfully!"

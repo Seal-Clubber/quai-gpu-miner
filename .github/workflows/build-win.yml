@@ -1,0 +1,47 @@
+name: WIN
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_version:
+        description: 'Tag version for the release (e.g., v1.0.0)'
+        required: true
+      branch:
+        description: 'Branch to release from (e.g., main, develop)'
+        default: 'main'
+        required: true
+
+jobs:
+  build:
+    runs-on: windows-2019
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install CUDA Toolkit
+        uses: Jimver/cuda-toolkit@v0.2.21
+        with:
+          cuda: '12.6.0'  # Specify CUDA version
+
+      - name: Install Visual Studio 2019 C++ CMake Tools
+        run: |
+          choco install visualstudio2019buildtools --confirm
+          choco install visualstudio2019-workload-vctools --confirm
+
+      - name: Install Perl
+        run: |
+          choco install strawberryperl --confirm
+          echo "C:\Strawberry\perl\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Open Developer Command Prompt and Build
+        shell: cmd
+        run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat"
+          cd C:\Users\RUNNERADMIN\work\repo\kawpowminer
+          git submodule update --init --recursive
+          mkdir build
+          cd build
+          cmake -G "Visual Studio 16 2019" -A X64 -H. -Bbuild -DETHASHCL=ON -DETHASHCUDA=ON -DAPICORE=ON ..
+          cd build
+          cmake --build . --config Release

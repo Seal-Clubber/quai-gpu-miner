@@ -41,10 +41,10 @@ jobs:
       - name: Package AMD version
         run: |
           cd ../
-          cp -r hiveos_packager_amd ../../output/quai-gpu-miner-amd/hiveos_packager_amd
-          cp ../../output/quai-gpu-miner-amd ../../output/quai-gpu-miner-amd/quai-gpu-miner-amd
-          chmod -R a+rwx ../../output/quai-gpu-miner-amd
-          tar -zcvf ../../output/quai-gpu-miner-amd.tar.gz -C ../../output quai-gpu-miner-amd
+          cp -r hiveos_packager_amd ../output/quai-gpu-miner-amd/hiveos_packager_amd
+          cp ../output/quai-gpu-miner-amd ../output/quai-gpu-miner-amd/quai-gpu-miner-amd
+          chmod -R a+rwx ../output/quai-gpu-miner-amd
+          tar -zcvf ../output/quai-gpu-miner-amd.tar.gz -C ../output quai-gpu-miner-amd
 
 
       - name: Upload artifacts

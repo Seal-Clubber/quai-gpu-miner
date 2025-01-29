@@ -32,10 +32,10 @@ jobs:
 
       - name: Build AMD version
         run: |
-          cd quai-gpu-miner
           mkdir build && cd build
           cmake .. -DETHASHCUDA=OFF -DETHASHCL=ON
           cmake --build .
+          mkdir -p ../../output
           cp kawpowminer/quai-gpu-miner ../../output/quai-gpu-miner-amd
 
       - name: Package AMD version

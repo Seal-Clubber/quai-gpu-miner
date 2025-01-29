@@ -26,6 +26,7 @@ jobs:
 
       - name: Initialize and update submodules
         run: |
+          ls ../
           git submodule update --init --recursive
 
       - name: Build NVIDIA version
@@ -33,30 +34,28 @@ jobs:
           mkdir build && cd build
           cmake .. -DETHASHCUDA=OFF -DETHASHCL=ON
           cmake --build .
-          mkdir -p ../../output && cp kawpowminer/quai-gpu-miner ../../output/quai-gpu-miner-nvidia
+          mkdir -p ../../output/quai-gpu-miner-nvidia && cp kawpowminer/quai-gpu-miner ../../output/quai-gpu-miner-nvidia/quai-gpu-miner-nvidia
 
       - name: Package NVIDIA version
         run: |
           cd ../
           cp -r hiveos_packager_nvidia ../output/quai-gpu-miner-nvidia/hiveos_packager_nvidia
-          cp ../output/quai-gpu-miner-nvidia ../output/quai-gpu-miner-nvidia/quai-gpu-miner-nvidia
           chmod -R a+rwx ../output/quai-gpu-miner-nvidia
-          tar -zcvf ../output/quai-gpu-miner-nvidia.tar.gz -C ../output quai-gpu-miner-nvidia
+          tar -zcvf ../output/quai-gpu-miner-nvidia.tar.gz -C ../output/quai-gpu-miner-nvidia
 
       - name: Build AMD version
         run: |
           rm -rf build && mkdir build && cd build
           cmake .. -DETHASHCUDA=OFF -DETHASHCL=ON
           cmake --build .
-          cp kawpowminer/quai-gpu-miner ../../output/quai-gpu-miner-amd
+          mkdir -p ../../output/quai-gpu-miner-amd && cp kawpowminer/quai-gpu-miner ../../output/quai-gpu-miner-amd/quai-gpu-miner-amd
 
       - name: Package AMD version
         run: |
           cd ../
           cp -r hiveos_packager_amd ../output/quai-gpu-miner-amd/hiveos_packager_amd
-          cp ../../output/quai-gpu-miner-amd ../output/quai-gpu-miner-amd/quai-gpu-miner-amd
           chmod -R a+rwx ../output/quai-gpu-miner-amd
-          tar -zcvf ../output/quai-gpu-miner-amd.tar.gz -C ../output quai-gpu-miner-amd
+          tar -zcvf ../output/quai-gpu-miner-amd.tar.gz -C ../output/quai-gpu-miner-amd
 
 
       - name: Upload artifacts
